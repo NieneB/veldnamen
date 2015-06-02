@@ -1,0 +1,1 @@
+SELECT upper($1)

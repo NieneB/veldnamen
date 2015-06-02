@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <title>Nienes API</title>
+    <meta charset="utf-8">
+    <meta name="viewport"content="width=device-width,initial-scale=1">
+    <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.css" />
+    <script src="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.js"></script>
+    <script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+    <link rel="stylesheet" href="style.css" type="text/css" media="screen">
+    <link href='https://api.tiles.mapbox.com/mapbox.js/plugins/leaflet-draw/v0.2.2/leaflet.draw.css' rel='stylesheet' />
+    <script src='https://api.tiles.mapbox.com/mapbox.js/plugins/leaflet-draw/v0.2.2/leaflet.draw.js'></script>
+  </head>
+
+  <body>
+    <div id="map"></div>
+    <div id= "line"></div>
+    <script>
+      var tileUrl = 'http://otile2.mqcdn.com/tiles/1.0.0/map/{z}/{x}/{y}.png',
+        map = L.map('map' );
+      L.tileLayer(tileUrl).addTo(map);
+      map.setView([53.079529, 6.614894], 14);    
+      var options ={
+        draw:{
+          polyline:{
+            shapeOptions:{
+              allowIntersection: false,
+              drawError: {
+                color: '#e1e100',
+                message: 'you can\'t draw intersecting lines!'
+              }
+            } 
+          },
+          polygon: false,
+          circle: false,
+          rectangle: false,
+          marker: false;
+        };
+      };
+      var drawControl = new L.Control.Draw(options);
+      map.addControl(drawControl); 
+      map.on('draw:created', function (e) {
+        var type = e.layerType,
+          layer = e.layer;
+
+        if (type === 'polyline') {
+          layer.on('mouseover', function() {
+            alert(layer.getLatLngs());    
+          });
+        };
+          
+        var coordinates = layer.getLatLngs().map(function(latLng) {
+          return latLng.lng + '%20' + latLng.lat;
+        }).join(',');
+    
+        d3.json('query4?linestring=' + coordinates, function(json) {
+          console.log(json);
+          var heights = json.features[0].coordinates.map(function(coordinate) {
+            return coordinate[2];
+          });
+          console.log(heights);      
+          L.geoJson(json,{
+            color: 'red'
+          }).addTo(map);
+          
+          var width = 100 / heights.length;
+          var line = d3.select("#line");
+          line.selectAll("div").remove();
+          line.selectAll("div")
+            .data(heights)
+            .enter()
+            .append("div")
+            .attr("class","rect")
+            .style("height", function(i){
+                return i*15 +"px";
+            })
+            .style("width", width +"%")
+            .style("background-color", "black");
+        });
+      });
+      
+      d3.json('query5?linestring=' + coordinates, function(json){
+        L.geoJson(json,{
+          color: 'black'
+        }).addTo(map);
+      });
+    </script>
+  </body>
+</html>

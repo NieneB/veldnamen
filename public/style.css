@@ -1,0 +1,23 @@
+
+* {
+  margin: 0;
+  padding: 0;
+}
+
+#map {
+  position: absolute;
+  width: 40%;
+  height: 100%;
+  right: 0px;
+}
+
+#line{
+    position:fixed;
+    width: 100%;
+    bottom: 0px;
+
+
+.rect{
+    display: inline-block;
+    vertical-align: bottom;
+}
