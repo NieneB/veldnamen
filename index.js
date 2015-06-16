@@ -80,14 +80,9 @@ app.get('/query4', function (req, res) {
     if (err) {
       res.status(500).send(err);
     } else {
-      res.send({
-        type: 'FeatureCollection',
-        features: [
-            JSON.parse(result.rows[0].geojson)
-        ]
-      });
+      res.send(result.rows);
     }
-  });
+  })
 });
 
 app.get('/query5', function (req, res) {
@@ -95,7 +90,7 @@ app.get('/query5', function (req, res) {
     if (err) {
       res.status(500).send(err);
     } else {
-      res.send(result.rows);
+      res.send(result);
     }
   });
 });

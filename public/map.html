@@ -13,114 +13,17 @@
   </head>
 
   <body>
+    <div id="title">
+      <h1> Veldnamen in Drenthe </h1>
+      <h2> Hoogte doorsnede met veldnamen </h2>
+      
+      <div id="explanation"> <p>Teken op de kaart een lijn. De hoogtes langs deze lijn worden uitgezet in de grafiek hieronder.               Uiteindelijk komen de namen van de velden hier ook op te staan. </p>
+        <p> Het kan even duren voordat de grafiek verschijnt.</p>
+      </div>
+      <p> Door Niene Boeijen </p>
+    </div>
     <div id="map"></div>
     <div id= "line"></div>
-    <script>
-    
-      var tileUrl = 'http://otile2.mqcdn.com/tiles/1.0.0/map/{z}/{x}/{y}.png';
-      var map = L.map('map');
-      L.tileLayer(tileUrl).addTo(map);
-      map.setView([53.079529, 6.614894], 14);    
-      
-      // Initialise the FeatureGroup to store editable layers
-      var drawnItems = new L.FeatureGroup();
-      map.addLayer(drawnItems);
-      
-      var options = {
-        edit: {
-          featureGroup: drawnItems
-        },
-        draw:{
-          polyline:{
-            shapeOptions:{
-              allowIntersection: false,
-              repeatMode: true,
-              drawError: {
-                color: '#e1e100',
-                message: 'you can\'t draw intersecting lines!'
-              }
-            } 
-          },
-          polygon: false,
-          circle: false,
-          rectangle: false,
-          marker: false
-        }
-      };
-      
-      var drawControl = new L.Control.Draw(options);
-      map.addControl(drawControl); 
-      
-      //L.drawLocal.draw.toolbar.buttons.polyline = 'Draw a sexy polygon!';
-      
-      map.on('draw:created', function(e){
-        var type = e.layerType;
-        var layer = e.layer; 
-        
-        if (type === 'polyline'){
-          var coordinates = layer.getLatLngs().map(function(latLng){
-            return latLng.lng + '%20' + latLng.lat;
-          }).join(',');
-    
-          d3.json('query4?linestring=' + coordinates, function(json){
-            L.geoJson(json,{
-              color: 'red'
-            }).addTo(map);
-            var heights = json.features[0].coordinates.map(function(coordinate){
-              return coordinate[2];
-            });
-          
-            //var range = heights.length
-            console.log(heights);  
-            // var data = d3.range(range).map(heights);
-          
-            var width = 100 / heights.length;
-            var line = d3.select("#line");
-     //            WIDTH = 1000,
-     //            HEIGHT = 500,
-     //            MARGINS = {
-     //              top: 20,
-     //              right: 20,
-     //              bottom: 20,
-     //              left: 50
-     //            };
-            line.selectAll("line").remove();
-     //
-     //        d3.select("#line"),
-     //        xScale = d3.scale.linear().range([MARGINS.left, WIDTH - MARGINS.right]).domain(range),
-     //        yScale = d3.scale.linear().range([HEIGHT - MARGINS.top, MARGINS.bottom]).domain(heights),
-     //        xAxis = d3.svg.axis()
-     //            .scale(xScale),
-     //
-     //        yAxis = d3.svg.axis()
-     //            .scale(yScale);
-     //        vis.append("svg:g")
-     //            .call(xAxis);
-          
-            line.selectAll("line")
-              .data(heights)
-              .enter()
-              .append("line")
-              .attr("class", "rect")
-              .attr("stroke", "black")
-              .attr("stroke-width", 2)
-              .style("height", function(i){
-                  return i*10+"px";
-              })
-              .style("width", width+"%")
-              .style("background-color", "black");
-            });
-          }
-          map.addLayer(layer);
-          drawnItems.addLayer(layer);
-      });
-                
-
-      // d3.json('query5?linestring=' + coordinates, function(json){
-      //   L.geoJson(json,{
-      //     color: 'black'
-      //   }).addTo(map);
-      // });
-    </script>
-  </body>
+    <script src="script.js" type="text/javascript" charset="utf-8"></script>
+      </body>
 </html>
