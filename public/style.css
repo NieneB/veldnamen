@@ -4,28 +4,57 @@
 
 #map {
   position: absolute;
-  width: 100%;
+  width: 70%;
   height: 100%;
   right: 0px;
   top: 0px  ;
   z-index: 0;
 }
-
+#panel{
+  padding: 10px 10px 10px 10px ;
+  position: absolute;
+  width: 30%;
+  height: 100%;
+  left: 0px;
+  top: 0px  ;
+  z-index: 0;
+}
+#explanation{
+  height: 250px;
+  width: 80%;
+  margin: 10px;
+  border-radius: 25px;
+  padding: 10px; 
+  background-color: #ffffcc;
+  vertical-align: middle;
+}
 #line{
     position: fixed;
-    width: 100%;
-    bottom: 0px;
-  }
+    width: 70%;
+    bottom: 10%;
+    height: 300px;
+    right:0px;
+    z-index:0;
+    background-color: white;
+    
+}
   
-.rect{
-    display: inline-block;
-    vertical-align: bottom;
+.button{
+  display: block;
+  z-index:100;
+  color:white;
+  cursor:pointer;
+  background-color: black;
+  height: 20px;
+  width: 100px;
+  border-radius: 5px;
+  text-align: center;
+  vertical-align: middle;
+  position: relative;
+  float: middle;
+  left:20%;
 }
 
-#title{
-  position: relative;
-  margin: 50px 50px 50px 50px ;
-}
 
 h1{
   font-family: calibri;
@@ -37,10 +66,3 @@ h2{
   font-weight: normal;
 }
 
-#explanation{
-  height: 250px;
-  width: 500px;
-  border-radius: 25px;
-  padding: 20px; 
-  background-color: #ffffcc;
-}

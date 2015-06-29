@@ -1,2 +1,1 @@
-SELECT round(random() * 9 + 1)::int AS num
-FROM generate_series(1, $1)
+SELECT ST_AsGeoJSON(ST_Transform(geom, 4326 )) FROM veldnamen;

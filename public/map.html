@@ -13,17 +13,21 @@
   </head>
 
   <body>
-    <div id="title">
+    <div id="panel">
       <h1> Veldnamen in Drenthe </h1>
       <h2> Hoogte doorsnede met veldnamen </h2>
-      
-      <div id="explanation"> <p>Teken op de kaart een lijn. De hoogtes langs deze lijn worden uitgezet in de grafiek hieronder.               Uiteindelijk komen de namen van de velden hier ook op te staan. </p>
+      <div id="explanation"> <p>Teken op de kaart een lijn. De hoogtes langs deze lijn worden uitgezet in de grafiek hieronder. Uiteindelijk komen de namen van de velden hier ook op te staan. </p>
         <p> Het kan even duren voordat de grafiek verschijnt.</p>
       </div>
+      
+      <div class="button" onclick="getMap('newMap')"><p>newMap</p></div>
+      <div class="button" onclick="getMap('oldMap')"><p>oldMap</p></div>
+      <div class="button" onclick="getMap('reliefMap')"><p>reliefMap</p></div>
       <p> Door Niene Boeijen </p>
     </div>
     <div id="map"></div>
-    <div id= "line"></div>
+    <svg id= "line"></svg>
     <script src="script.js" type="text/javascript" charset="utf-8"></script>
-      </body>
+     
+  </body>
 </html>

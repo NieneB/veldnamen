@@ -20,7 +20,7 @@ AHN AS
 
 -- Get names of intersecting fields
 fields AS
-  (SELECT naam AS naam, ST_Intersection(p.geom, veldnamen.geom) AS geoms
+  (SELECT naam AS naam, category AS category, ST_Intersection(p.geom, veldnamen.geom) AS geoms
       	FROM veldnamen, points2d p 
       	WHERE ST_Intersects(veldnamen.geom, p.geom)),
 
@@ -28,6 +28,6 @@ points AS
 (SELECT *  FROM AHN LEFT OUTER JOIN fields ON (AHN.geom = fields.geoms))
 
 -- Make points:
-SELECT ST_AsGeoJSON(ST_MakePoint(ST_X(ST_Transform(ST_SetSRID(geom, 28992),4326)), ST_Y(ST_Transform(ST_SetSRID(geom, 28992),4326)), heights)) AS geom, naam, heights, percentage
+SELECT ST_AsGeoJSON(ST_MakePoint(ST_X(ST_Transform(ST_SetSRID(geom, 28992),4326)), ST_Y(ST_Transform(ST_SetSRID(geom, 28992),4326)), heights)) AS geom, naam, heights, percentage , category
 FROM points
 

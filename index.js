@@ -20,7 +20,7 @@ app.get('/', function (req, res) {
   res.send({
     message: 'Welkom op Nienes eerste API!',
     urls: [
-      'http://localhost:3000/query1?aantal=20',
+      'http://localhost:3000/query1',
       'http://localhost:3000/query2?string=Hallootjes',
       'http://localhost:3000/query3',
       'http://localhost:3000/map.html',
@@ -31,13 +31,18 @@ app.get('/', function (req, res) {
 });
 
 app.get('/query1', function (req, res) {
-  query(query1, [req.query.aantal], function(err, result) {
+  query(query1, null, function(err, result) {
     if (err) {
       res.status(500).send(err);
     } else {
-      res.send(result.rows);
-    }
-  });
+      res.send(
+        { type: 'FeatureCollection',
+          features: [
+              result.rows.map(function(d){return JSON.parse(d.st_asgeojson)})
+              ]
+        })
+      }
+    });
 });
 
 app.get('/query2', function (req, res) {
