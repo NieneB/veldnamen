@@ -19,7 +19,7 @@ AHN AS
 
 -- Get names of intersecting fields
 fields AS
-  (SELECT naam AS naam, category AS category, ST_Intersection(p.geom, veldnamen.geom) AS geoms
+  (SELECT naam AS naam, code_1 AS category, ST_Intersection(p.geom, veldnamen.geom) AS geoms
       	FROM veldnamen, points2d p
       	WHERE ST_Intersects(veldnamen.geom, p.geom)),
 

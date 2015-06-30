@@ -10,8 +10,8 @@ app.use(express.static('public'));
 var conString = util.format("postgres://%s:%s@%s/%s", config.db.username, config.db.password, config.db.hostname, config.db.database);
 
 var queries = {
-  veldnamen: fs.readFileSync('veldnamen.sql', {encoding: 'utf8'}),
-  transect: fs.readFileSync('transect.sql', {encoding: 'utf8'})
+  veldnamen: fs.readFileSync('./queries/veldnamen.sql', {encoding: 'utf8'}),
+  transect: fs.readFileSync('./queries/transect.sql', {encoding: 'utf8'})
 }
 
 app.get('/', function (req, res) {

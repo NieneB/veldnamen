@@ -22,7 +22,12 @@ function getMap(maps){
 };
 
 
-var map = L.map('map');
+var map = L.map('map',
+  {options: {
+    maxZoom: 14
+    }
+  })  ;
+
 L.tileLayer(tileUrl).addTo(map);
 map.setView([53.079529, 6.614894], 14);    
 
@@ -49,11 +54,20 @@ var options = {
     circle: false,
     rectangle: false,
     marker: false
-  }
+  },
+  edit:{
+    featureGroup: drawnItems,
+    edit: false,
+    remove: false
+      }
 };
 
-//draw field with field name //
-d3.json('query1', function(json){
+
+L.drawLocal.draw.toolbar.buttons.polyline = 'Teken een lijn door de velden heen!';
+
+
+//draw fields with field name //
+d3.json('veldnamen', function(json){
   console.log("requesting fields from database");
   L.geoJson(json.features[0], 
     {style:{
@@ -75,20 +89,11 @@ map.on('draw:created', function(e){
     var coordinates = layer.getLatLngs().map(function(latLng){
       return latLng.lng + '%20' + latLng.lat;
     }).join(',');
-    d3.json('query4?linestring=' + coordinates, function(json){
+    d3.json('transect?linestring=' + coordinates, function(json){
       console.log("requesting line from database")
-      console.log(json);
 
-      // range of heights for transect line
-      var heights = json.map(function(object){
-        if (object.heights !== null){
-          return object;
-        }
-        else {return object.heights = -5};
-      });
-            console.log(heights);
-      // filter duplicate points
-      var prev = "niene";
+      // Get field names: filter out duplicate points
+      var prev = json[0].naam;
       var field = json.filter(function(object){
         if (object.naam !== prev) {
           prev = object.naam;
@@ -97,16 +102,24 @@ map.on('draw:created', function(e){
         return false;
       }); 
       
+      // line groups
+      function groupBy(array, f){
+        var groups = {};
+        array.forEach( function(o){
+          var group = JSON.stringify( f(o) );
+          groups[group] = groups[group] || [];
+          groups[group].push( o );  
+          });
+        return Object.keys(groups).map( function(group){
+          return groups[group]; 
+          })
+      };
+      var soil = groupBy(json, function(item){
+        return [item.naam];
+        });
+      console.log(soil)
       
-      //decoration stuff
-      var decoration = json.filter(function(object){
-        if (object.naam == null){
-          return false;
-        }
-        return true;
-      })
-      console.log(decoration)
-      // line making function
+////// drawing the landscape: ////////////
       
       //start drawing in svg #line//
       var line = d3.select("#line");
@@ -115,9 +128,55 @@ map.on('draw:created', function(e){
       line.selectAll("path, text, circle, image, line").remove();
       
       //get width line panel
-      var widthLine = d3.select("#line").style("width").replace("px", "");
+      var widthLine = line.style("width").replace("px", "");
       var width = widthLine/100
       var heightdif = 150
+
+      // line and area function
+      var lineFunction = d3.svg.line()
+        .x( function(d){
+          return (d.percentage * width)})
+        .y( function(d){
+          return (d.heights*-5)+ heightdif})
+        .interpolate("basis-open");
+    
+      var areaFunction = d3.svg.area()
+        .x( lineFunction.x())
+        .y0( lineFunction.y())
+        .y1(300)
+        .interpolate("basis");
+      
+      //filling up the area
+      var area = line.selectAll(".bodem")
+        .data(soil)
+        .enter()
+        .append("path")
+        .attr("class", "bodem")
+        .attr("d" , function(d){
+          if(d[0].naam !== null){
+            return areaFunction(d)}
+          })
+        .attr("fill", "brown")
+        .attr("opacity", "0.3")
+        .attr("stroke", "none")
+        .attr("stroke-width", "none");
+        
+        
+      //draw transect line//
+      var linestring = [json[0]];
+    
+      line.selectAll(".transect")
+        .data(linestring)
+        .enter()
+        .append("path")
+        .attr("class", "transect")
+        .attr("d", lineFunction(json))
+        .attr("stroke", "black")
+        .attr("stroke-width", 2)
+        .attr("fill", "none");
+      
+      
+      
       //draw field locations
       var fields = line.selectAll("circle")
         .data(field)
@@ -154,97 +213,111 @@ map.on('draw:created', function(e){
           return "rotate(60 " + x.percentage * width +"," + (x.heights*-5+ heightdif +15) + ")"
         });
       
-      // apend category symbol to fields
-      var cat = line.selectAll("image")
-        .data(field)
-        .enter()
-        .append("svg:image")
-        .style("height", "50")
-        .style("width", "50")
-        .attr("anchor", "bottom left")
-        .attr("x", function(x){
-          return x.percentage * width-25
-        })
-        .attr("y", function(x){
-          return (x.heights*-5)+heightdif-50
-        })
-        .attr("xlink:href",  function(x){ 
-          switch(x.category){
-          case "wilde_dieren": return "/pict/animal.svg"
-          break;
-          case "beekdal_moeras": return "/pict/swomp.svg"
-          break;
-          case "beekdalen_moerassen": return "/pict/swomp.svg"
-          break;
-          case "bossen": return "/pict/forest.svg"
-          break;
-          }
-        });
-      
-      //draw transect line/
-      var lineFunction = d3.svg.line()
-        .x( function(d){
-          return (d.percentage * width)
-        })
-        .y( function(d){
-          return (d.heights*-5)+ heightdif
-        })
-        .interpolate("basis-open");
       
       
-        
-      var linestring = [json[0]];
-    var NAP = line.selectAll("line")
-      .data(linestring)
-      .enter()
-      .append("line")
-      .attr("x1", 0)
-      .attr("y1", heightdif)
-      .attr("x2", widthLine)
-      .attr("y2", heightdif)
-      .attr("stroke", "black")
-      .attr("stroke-width", 1)
-      .style("stroke-dasharray", ("3, 3"));
     
-      line.selectAll("path")
+    // drawing null line
+      var NAP = line.selectAll("line")
         .data(linestring)
         .enter()
+        .append("line")
+        .attr("x1", 0)
+        .attr("y1", heightdif)
+        .attr("x2", widthLine)
+        .attr("y2", heightdif)
+        .attr("stroke", "black")
+        .attr("stroke-width", 1)
+        .style("stroke-dasharray", ("3, 3"));
+    
+    
+      // drawing field line locations
+      var soilline = line.selectAll(".deco")
+        .data(soil)
+        .enter()
         .append("path")
-        .attr("d", lineFunction(json))
+        .attr("class", "deco")
+        .attr("d", function(d){
+          if(d[0].naam !== null){
+            return lineFunction(d)}
+          })
         .attr("stroke", "black")
         .attr("stroke-width", 2)
         .attr("fill", "none");
-      
-      var decoline = line.selectAll("deco")
-        .data(decoration)
-        .enter()
-        .append("line")
-        .attr("d", lineFunction(decoration))
-        .attr("stroke", "red")
-        .attr("stroke-width", 10);
         
-        
-      //filling up the area!
-      // var areaFunction = d3.svg.area()
-      //   .x( function(d){
-      //     return (d.percentage/100)
-      //   })
-      //   .y1( function(d){
-      //     return (d.heights*5)+100
-      //   })
-      //   .y0(function(d){
-      //     return 300})
-      //   .interpolate("basis");
-      //
-      // var area = line.selectAll("area")
-      //   .data(field)
-      //   .enter()
-      //   .append("area")
-      //   .attr("d" , areaFunction(field))
-      //   .style("fill", "steelblue");
+        function drawSymbols(grouparray){
+          var pictureset = []
+          for (i=0; i < grouparray.length; i++){
+            var l = grouparray[i].length
+            
+            for( s=0; s < l/10/2; s++){
+              var d = Math.floor(Math.random()*(l + 1 ))
+              pictureset.push([grouparray[i][d]])
+            }
+            
+        } return pictureset 
+      };
 
+      
+      var pictures = drawSymbols(soil)
+      var pict = pictures.filter(function(d){
+        if( d[0] !== undefined ){
+          return true
+        } else return false
+      })
+    // apend category symbol to fields
+    var cat = line.selectAll("image")
+      .data(pict)
+      .enter()
+      .append("svg:image")
+      .style("width", "50")
+      .style("height", "50")
+      .attr("anchor", "bottom center")
+      .attr("x", function(x){
+        return x[0].percentage * width-25
+      })
+      .attr("y", function(x){
+        return (x[0].heights*-5)+heightdif-50
+      })
+      .attr("xlink:href",  function(x){ 
+        switch(x[0].category){
+        case "wilde_dieren": return "/pict/animal.svg"
+        break;
+        case "D2": return "/pict/swomp.svg"
+        break;
+        case "D9": return "/pict/swomp.svg"
+        break;
+        case "D1": return "/pict/swomp.svg"
+        break;
+        case "E1": return "/pict/e7.svg"
+        break;
+        case "E4": return "/pict/e7.svg"
+        break;
+        case "E16": return "/pict/e6.svg"
+        break;
+        case "G1": return "/pict/g1.svg"
+        break;
+        case "G6": return "/pict/g6.svg"
+        break;
+        case "E6": return "/pict/e6.svg"
+        break;
+        case "E14": return "/pict/e14.svg"
+        break;
+        case "E7": return "/pict/e7.svg"
+        break;
+        case "E13": return "/pict/e13.svg"
+        break;
+        }
+      });
     });
   }
   map.addLayer(layer);
   drawnItems.addLayer(layer);
 });
+
+
+
+    
+    
+    
+    
+    
