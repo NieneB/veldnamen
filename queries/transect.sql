@@ -13,20 +13,29 @@ points2d AS
 
 AHN AS
 -- Get DEM elevation for each
-  (SELECT p.geom AS geom, ST_Value(ahn2.rast, 1, p.geom) AS heights, percentage
-  FROM ahn2, points2d p
-  WHERE ST_Intersects(ahn2.rast, p.geom)),
+  (SELECT p.geom AS geom, ST_Value(ahn.rast, 1, p.geom) AS heights, percentage
+  FROM ahn, points2d p
+  WHERE ST_Intersects(ahn.rast, p.geom)),
 
--- Get names of intersecting fields
 fields AS
-  (SELECT naam AS naam, code_1 AS category, ST_Intersection(p.geom, veldnamen.geom) AS geoms
-      	FROM veldnamen, points2d p
-      	WHERE ST_Intersects(veldnamen.geom, p.geom)),
+    (SELECT naam AS naam, code_1_ AS category1, code_2 AS category2, ST_Intersection(p.geom, veldnamen2.geom) AS geoms
+        	FROM veldnamen2, points2d p 
+        	WHERE ST_Intersects(veldnamen2.geom, p.geom)),
+
+--Get Water inersects
+waters As
+(SELECT naamnl AS waternaam, typewater AS typewater, identifica AS waterId, ST_Intersection(p.geom, water.geom) AS geomz
+FROM water, points2d p
+WHERE ST_Intersects(water.geom, p.geom)),
 
 points AS
-(SELECT *  FROM AHN LEFT OUTER JOIN fields ON (AHN.geom = fields.geoms))
+(SELECT *  FROM AHN LEFT OUTER JOIN fields ON (AHN.geom = fields.geoms)),
+
+points1 AS
+(SELECT * FROM points LEFT OUTER JOIN waters ON (points.geom = waters.geomz))
 
 -- Make points:
-SELECT ST_AsGeoJSON(ST_MakePoint(ST_X(ST_Transform(ST_SetSRID(geom, 28992),4326)), ST_Y(ST_Transform(ST_SetSRID(geom, 28992),4326)), heights)) AS geometry, naam, heights, percentage , category
-FROM points
+SELECT ST_AsGeoJSON(ST_MakePoint(ST_X(ST_Transform(ST_SetSRID(geom, 28992),4326)), ST_Y(ST_Transform(ST_SetSRID(geom, 28992),4326)), heights)) 
+AS geometry, naam, heights, percentage , category1, category2, waternaam, typewater, waterID
+FROM points1
 

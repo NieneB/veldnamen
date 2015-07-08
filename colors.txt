@@ -1,0 +1,14 @@
+#B3BC31 - groen
+#EC8F2D - oranje
+#2B2118 - donker bruin
+#E9DBB7 - beige
+#6A5544 - bruin
+#FCFCFC - wit
+
+var colors = {
+    green   : '#B3BC31',
+    orange  : '#EC8F2D',
+    dark    : '#2B2118', 
+    beige   : '#E9DBB7', 
+    brown   : '#6A5544'
+}

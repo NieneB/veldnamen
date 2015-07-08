@@ -1,67 +1,143 @@
 *{
   font-family: calibri;
+  text-decoration: none;
+}
+@font-face {
+    font-family: 'RobotoSlab'; 
+    src: url('font/RobotoSlab-Bold.ttf'); 
 }
 
-#map {
+.map1 {
   position: absolute;
-  width: 70%;
-  height: 100%;
+  width: 100%;
+  height: 60%;
   right: 0px;
   top: 0px  ;
   z-index: 0;
 }
-#panel{
-  padding: 10px 10px 10px 10px ;
+.map2 {
   position: absolute;
-  width: 30%;
+  width: 100%;
   height: 100%;
-  left: 0px;
+  right: 0px;
   top: 0px  ;
-  z-index: 0;
+  z-index: -2;
+}
+#panel{
+  position: fixed;
+  width: 80%;
+  height:90%;
+  top:50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: -1;
+  border-radius: 25px;
+}
+#color{
+  padding: 10px 10px 10px 10px ;
+  position: fixed;
+  width: 80%;
+  height: 90%;
+  top: 50%; 
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: -1;
+  background-color: #B3BC31;;
+  opacity: 0.8;
+  border-radius: 25px;
 }
 #explanation{
-  height: 250px;
-  width: 80%;
-  margin: 10px;
-  border-radius: 25px;
-  padding: 10px; 
-  background-color: #ffffcc;
+  position: static;
+  display: block;
+  overflow: auto;
+  width: 100%;
+  height:70%;
+  top: 20%;
   vertical-align: middle;
+  text-align: center;
 }
+#header{
+  width:100%;
+  height: 30%;
+  border-top-left-radius:25px;
+  border-top-right-radius:25px;
+  position: static;
+  display: block; 
+  top: 0px;
+  left: 0px;
+  z-index: -1;
+  background-size: 100%;
+/*  http://in.drenthe.nl/dmedia/media/user-images/4bd0f/2fdce/3ef07/5bcaf/d2166/drenthe-header-lente-2015-v3.jpg*/
+  background-image: url('http://hetreestdal.nl/wp/wp-content/uploads/2012/11/Wildenberg-2.jpg') ;
+  background-position: center top;
+  background-repeat: repeat-x;
+}
+
+
+#button{
+  position: static;
+  display: block;
+  width: 150px;
+  height: 50px;
+  padding: 10px;
+  background-color: #2B2118;
+  color: white;
+  border-radius: 5px;
+  cursor: pointer;
+  margin: auto;
+  text-align: center;
+
+}
+
+
 #line{
     position: fixed;
-    width: 70%;
-    bottom: 10%;
-    height: 300px;
+    width: 100%;
+    bottom: 0px ;
+    height: 40%;
     right:0px;
     z-index:0;
-    background-color: white;
-    
+    background: -webkit-linear-gradient(#E9DBB7, white, white);
+/*    background-image: url('http://www.danone.nl/Danone/media/Danone/HeaderBackgrounds/Lucht.jpg?width=1600&height=800&ext=.jpg'), -webkit-linear-gradient(top, white);*/
+    background-repeat: ;
+    background-position: center top;
 }
-  
-.button{
-  display: block;
-  z-index:100;
-  color:white;
-  cursor:pointer;
-  background-color: black;
-  height: 20px;
-  width: 100px;
-  border-radius: 5px;
-  text-align: center;
-  vertical-align: middle;
-  position: relative;
-  float: middle;
-  left:20%;
-}
-
 
 h1{
-  font-family: calibri;
-  font-size: 40px;
+  padding: 0px;
+  margin: 0px;
+  vertical-align: top;
+  font-family: RobotoSlab;
+  font-size: 450%;
+  text-align: center;
+  color: white;
+  text-shadow: 2px 2px #2B2118;
 }
 h2{
-  font-family: calibri;
-  font-size: 30px;
-  font-weight: normal;
+  color: #2B2118;
+  text-align: center;
+  font-size: 150%;
+  font-weight: bold;
+  
+}
+p{
+  color: #2B2118;
+  text-align: center;
+  font-size: 110%;
+}
+
+#bron{
+  font-style: italic;
+  position:absolute;
+  bottom: 0px;
+  width: 100%;
+  margin: auto;
+}
+#git-source{
+    position: fixed;
+    top: 10px;;
+    right: 10px;
+    transform: rotate(10deg);
+    -webkit-transform: rotate(10deg);
+    -moz-transform: rotate(10deg);
 }

@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="en">
   <head>
-    <title>Nienes API</title>
+    <title>Veldnamen Ontdekken</title>
     <meta charset="utf-8">
     <meta name="viewport"content="width=device-width,initial-scale=1">
     <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.css" />
@@ -10,22 +10,17 @@
     <link rel="stylesheet" href="style.css" type="text/css" media="screen">
     <link href='https://api.tiles.mapbox.com/mapbox.js/plugins/leaflet-draw/v0.2.2/leaflet.draw.css' rel='stylesheet' />
     <script src='https://api.tiles.mapbox.com/mapbox.js/plugins/leaflet-draw/v0.2.2/leaflet.draw.js'></script>
+    <script src="Leaflet-MiniMap-master/src/Control.MiniMap.js" type="text/javascript" charset="utf-8"></script>
+    <link rel="stylesheet" href="Leaflet-MiniMap-master/src/Control.MiniMap.css" type="text/css" media="screen">
+    <script src="Leaflet-MiniMap-master/src/Control.MiniMap-de.js" type="text/javascript" charset="utf-8"></script>
+    <link rel="stylesheet" href="control.layers.minimap.css" />
+    <script src="L.Control.Layers.Minimap.js"></script>    
   </head>
 
-  <body>
+  <body >
     <div id="panel">
-      <h1> Veldnamen in Drenthe </h1>
-      <h2> Hoogte doorsnede met veldnamen </h2>
-      <div id="explanation"> <p>Teken op de kaart een lijn. De hoogtes langs deze lijn worden uitgezet in de grafiek hieronder. Uiteindelijk komen de namen van de velden hier ook op te staan. </p>
-        <p> Het kan even duren voordat de grafiek verschijnt.</p>
-      </div>
-      
-      <div class="button" onclick="getMap('newMap')"><p>newMap</p></div>
-      <div class="button" onclick="getMap('oldMap')"><p>oldMap</p></div>
-      <div class="button" onclick="getMap('reliefMap')"><p>reliefMap</p></div>
-      <p> Door Niene Boeijen </p>
     </div>
-    <div id="map"></div>
+    <div id='map' class="map1"></div>
     <svg id= "line"></svg>
     <script src="script.js" type="text/javascript" charset="utf-8"></script>
      

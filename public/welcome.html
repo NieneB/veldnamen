@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <title>Veldnamen Ontdekken</title>
+    <meta charset="utf-8">
+    <meta name="viewport"content="width=device-width,initial-scale=1">
+    <link rel="stylesheet" href="style.css" type="text/css" media="screen">
+    <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.css" />
+    <script src="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.js"></script>
+    <script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+  </head>
+  
+  <body>
+    <div id='color'></div>
+    <div id='panel'>  
+      <div id="header"> 
+        <h1> Veldnamen in Drenthe </h1> 
+        <h2> Ontdek het landschap en de verborgen namen! </h2>
+        <a id="button" href="map.html">Klik hier om naar de kaart te gaan! </a>
+      </div>
+      <div id="explanation">
+        
+        <h2> De uitleg: </h2>
+        <p>Klik op deze knop om een lijn te teken op de kaart</p>
+        <img src="pict/drawpolyline.svg"> </img>
+        <p>Eindig de lijn door nog eens op het laatste punt te klikken</p>
+        <img src="pict/clickendpoint.svg"> </img>
+        <p>Heb even geduld... </p>
+        <img src="pict/hourglass.svg"> </img>
+        <p>Nu wordt jouw hoogte doorsnede van het landschap getekend!</p>
+        <p>Ontdek de namen van de velden, er zijn verhalen, dieren en betekenissen te vinden </p>
+        <img src="pict/landscape.svg"> </img>
+        <p></p>
+        <a id="button" href="map.html">Klik hier om naar de kaart te gaan! </a>
+        <p>Meer informatie over de veldnamen vind je in het boek; <a href="http://www.regioboekwinkel.nl/van-jeruzalem-tot-ezelakker">'van Jeruzalem tot Elzelakker, levende veldnamen van de Drentse Aa'</a></p>
+        
+      </div>
+    </div>
+
+    <p id="bron">Deze applicatie is ontwikkeld door Niene Boeijen, als stage opdracht van Waag Society & Wageningen Universiteit</p>
+    <a href= https://github.com/NieneB/veldnamen target="_blank" id="git-source">
+        <img src="pict/GitHub-Mark-64px.png" width="50" height="50" alt="GitHub Mark 64px"> 
+    </a>
+    <div id='map' class='map2'> </div>
+    <script src="script.js" type="text/javascript" charset="utf-8"></script>
+  </body>
+</html>
