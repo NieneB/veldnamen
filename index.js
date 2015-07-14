@@ -16,7 +16,7 @@ var queries = {
 
 app.get('/', function (req, res) {
   res.send({
-    message: 'Welkom op Nienes eerste API!',
+    message: 'Veldnamen API',
     urls: [
       'http://localhost:3000/map.html',
       'http://localhost:3000/veldnamen',

@@ -54,7 +54,6 @@ L.Control.Layers.Minimap = L.Control.Layers.extend({
 
 	_initLayout: function () {
 		L.Control.Layers.prototype._initLayout.call(this);
-
 		L.DomUtil.addClass(this._container, 'leaflet-control-layers-minimap');
 		L.DomEvent.on(this._container, 'scroll', this._onListScroll, this);
 	},

@@ -1,27 +1,22 @@
 *{
-  font-family: calibri;
   text-decoration: none;
 }
 @font-face {
     font-family: 'RobotoSlab'; 
     src: url('font/RobotoSlab-Bold.ttf'); 
 }
-
-.map1 {
-  position: absolute;
-  width: 100%;
-  height: 60%;
-  right: 0px;
-  top: 0px  ;
-  z-index: 0;
+@font-face {
+    font-family: 'Florlrg'; 
+    src: url('font/FLORLRG_.ttf'); 
 }
-.map2 {
+
+#map {
   position: absolute;
   width: 100%;
   height: 100%;
   right: 0px;
   top: 0px  ;
-  z-index: -2;
+  z-index: 0;
 }
 #panel{
   position: fixed;
@@ -30,7 +25,7 @@
   top:50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  z-index: -1;
+    z-index: 1;
   border-radius: 25px;
 }
 #color{
@@ -41,21 +36,27 @@
   top: 50%; 
   left: 50%;
   transform: translate(-50%, -50%);
-  z-index: -1;
+  z-index: 1;
   background-color: #B3BC31;;
-  opacity: 0.8;
+  opacity: 0.7;
+  mix-blend-mode: multiply ;
   border-radius: 25px;
 }
-#explanation{
+.explanation{
   position: static;
-  display: block;
+  display: inline-block;
+  float: center;
   overflow: auto;
-  width: 100%;
-  height:70%;
-  top: 20%;
+  width: 45%;
+  margin: 20px 10px 10px 10px ;
+  height: 65%;
   vertical-align: middle;
   text-align: center;
+  border-radius: 10px;
+  background-color: #EC8F2D;
+  box-sizing: border-box;
 }
+
 #header{
   width:100%;
   height: 30%;
@@ -65,7 +66,7 @@
   display: block; 
   top: 0px;
   left: 0px;
-  z-index: -1;
+
   background-size: 100%;
 /*  http://in.drenthe.nl/dmedia/media/user-images/4bd0f/2fdce/3ef07/5bcaf/d2166/drenthe-header-lente-2015-v3.jpg*/
   background-image: url('http://hetreestdal.nl/wp/wp-content/uploads/2012/11/Wildenberg-2.jpg') ;
@@ -89,18 +90,37 @@
 
 }
 
+.menu{
+  position:static;
+  display: block ;
+  width: 50px;
+  height: 40px;
+  top: 50%;
+  right:0px;
+  background-color: #EC8F2D;
+  color: white;
+}
 
 #line{
-    position: fixed;
-    width: 100%;
-    bottom: 0px ;
-    height: 40%;
-    right:0px;
-    z-index:0;
-    background: -webkit-linear-gradient(#E9DBB7, white, white);
-/*    background-image: url('http://www.danone.nl/Danone/media/Danone/HeaderBackgrounds/Lucht.jpg?width=1600&height=800&ext=.jpg'), -webkit-linear-gradient(top, white);*/
-    background-repeat: ;
-    background-position: center top;
+    position: absolute;
+    margin: 10px 10px 10px 10px;
+    padding: 10px 10px 10px 10px;
+    border-radius:10px;
+    width: 96%;
+    bottom: 10px ;
+    height: 35%;
+    z-index:1;
+/*    background: -webkit-linear-gradient(#E9DBB7, white, white);*/
+    background-color: #E9DBB7;
+    background-size: 100%;
+    background-blend-mode: darken ;
+    background-image: url('http://www.sycra.net/FreePaperTexture.jpg');
+/*    https://www.bluemoonscrapbooking.com/product_images/5317906hr.jpg
+    http://0.s3.envato.com/files/32085967/very%20dirt%20texture%20paper_2.jpg
+    http://www.joesheftelgallery.com/12/wp-content/uploads/grid14_med.jpg*/
+/*http://salon.io/system/files/513122/7c4374a80607000b5e/original_pergament.jpg*/
+/*    http://www.noordhollandsenieuwsbode.nl/papier/papier.jpg*/
+
 }
 
 h1{

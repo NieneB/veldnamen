@@ -4,25 +4,30 @@
     <title>Veldnamen Ontdekken</title>
     <meta charset="utf-8">
     <meta name="viewport"content="width=device-width,initial-scale=1">
+    
     <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.css" />
     <script src="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.js"></script>
+    
     <script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
-    <link rel="stylesheet" href="style.css" type="text/css" media="screen">
+    
     <link href='https://api.tiles.mapbox.com/mapbox.js/plugins/leaflet-draw/v0.2.2/leaflet.draw.css' rel='stylesheet' />
-    <script src='https://api.tiles.mapbox.com/mapbox.js/plugins/leaflet-draw/v0.2.2/leaflet.draw.js'></script>
-    <script src="Leaflet-MiniMap-master/src/Control.MiniMap.js" type="text/javascript" charset="utf-8"></script>
-    <link rel="stylesheet" href="Leaflet-MiniMap-master/src/Control.MiniMap.css" type="text/css" media="screen">
-    <script src="Leaflet-MiniMap-master/src/Control.MiniMap-de.js" type="text/javascript" charset="utf-8"></script>
-    <link rel="stylesheet" href="control.layers.minimap.css" />
-    <script src="L.Control.Layers.Minimap.js"></script>    
+    <script src='https://api.tiles.mapbox.com/mapbox.js/plugins/leaflet-draw/v0.2.2/leaflet.draw.js'></script>    
+    
+    <script src="leaflet.layerscontrol-minimap/L.Control.Layers.Minimap.js" type="text/javascript" charset="utf-8"></script>
+    <link rel="stylesheet" href="leaflet.layerscontrol-minimap/control.layers.minimap.css" type="text/css" media="screen">
+    
+    <link rel="stylesheet" href="style.css" type="text/css" media="screen">
   </head>
 
   <body >
-    <div id="panel">
-    </div>
-    <div id='map' class="map1"></div>
+    <h1> Veldnamen ontdekken </h1> 
+    <div class="menu" id="legend"> <p>Legenda</p> </div>
+    <div class = "menu" id="explanation"><p>Uitleg</p></div>
+    <div id='map' class="map"></div>
     <svg id= "line"></svg>
     <script src="script.js" type="text/javascript" charset="utf-8"></script>
-     
+     <!-- <a href= https://github.com/NieneB/veldnamen target="_blank" id="git-source">
+       <img src="pict/GitHub-Mark-64px.png" width="50" height="50" alt="GitHub Mark 64px"></a> -->
+     <p id="bron">Deze applicatie is ontwikkeld door Niene Boeijen, als stage opdracht van Waag Society & Wageningen Universiteit</p>
   </body>
 </html>

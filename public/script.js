@@ -1,35 +1,21 @@
 //-------------------
 // creating map layers
 //-------------------
-var oldMap = L.tileLayer('http://s.map5.nl/map/gast/tiles/tmk_1850/EPSG900913/{z}/{x}/{y}.png' )
-var newMap = L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png')
-var reliefMap = L.tileLayer('http://s.map5.nl/map/gast/tiles/relief_struct/EPSG900913/{z}/{x}/{y}.jpeg')
-
-//-------------------
-// Update maps!
-//-------------------
-
-var current = oldMap;
-var other = newMap
-var changeLayer = function(){
-  map.removeLayer(current);
-  if(current == oldMap){
-    current = newMap
-    other = oldMap
-  } 
-  else{ 
-    current = oldMap
-    other = newMap} ;
-  map.addLayer(current);
-};
-
+var basemaps ={ 
+  "_1830": L.tileLayer('http://s.map5.nl/map/gast/tiles/tmk_1850/EPSG900913/{z}/{x}/{y}.png' ),
+  "_2015": L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'),
+  "Hoogte": L.tileLayer('http://s.map5.nl/map/gast/tiles/relief_struct/EPSG900913/{z}/{x}/{y}.jpeg')
+}
+var overlays = {
+ 
+}
 //-------------------
 //Make the map
 //-------------------
 var map = new L.map('map', {
   maxZoom: 15,
   minZoom: 12,
-  layers: current
+  layers: basemaps._1830
 });
 
 map.setView([53.079529, 6.614894], 14);
@@ -41,26 +27,29 @@ map.setMaxBounds([
 //-------------------
 //Make the MINI map
 //-------------------
-var miniOptions = {
-  minZoom: 12, 
-  maxZoom: 15
-};
-// var miniMap =  new L.Control.Layers.Minimap(other, options)
-// miniMap.addTo(map);
+
+L.control.layers.minimap(basemaps, overlays, {
+  maxZoom:15,
+  minZoom: 10
+} ).addTo(map);
+
+// colapse = false na laden van de pagina
+// 
+
 
 //-------------------
 // Velden met naam tekenen
 //-------------------
-d3.json('veldnamen', function(json){
-  console.log("requesting fields from database");
-  L.geoJson(json.features[0], 
-    {style:{
-      "fillColor": "#B3BC31",
-      "stroke": false,
-      "fillOpacity": "0.6"}
-    }
-  ).addTo(map);
-});
+// d3.json('veldnamen', function(json){
+//   console.log("requesting fields from database");
+//   L.geoJson(json.features[0],
+//     {style:{
+//       "fillColor": "#B3BC31",
+//       "stroke": false,
+//       "fillOpacity": "0.6"}
+//     }
+//   ).addTo(map);
+// });
 
 //-------------------
 // Functions 
@@ -75,7 +64,7 @@ var lineFunction = d3.svg.line()
 var areaFunction = d3.svg.area()
   .x( lineFunction.x())
   .y0( lineFunction.y())
-  .y1(300)
+  .y1(400)
   .interpolate("basis");
 
 var waterFunction = d3.svg.area()
@@ -89,7 +78,6 @@ function groupBy(array, index){
   array.forEach( function(object){
 
     var group = JSON.stringify( index(object));
-        console.log(group)
     groups[group] = groups[group] || [];
     groups[group].push( object );  
   });
@@ -104,7 +92,7 @@ function groupBy(array, index){
 var drawnItems = new L.FeatureGroup();
 map.addLayer(drawnItems);
 
-var options = {
+var optionsz = {
   edit: {
     featureGroup: drawnItems
   },
@@ -127,41 +115,20 @@ var options = {
   }
 };
 
-var drawControl = new L.Control.Draw(options);
+var drawControl = new L.Control.Draw(optionsz);
 map.addControl(drawControl); 
 
 //-------------------
 // Nederlandse zinnen ipv engels
 //-------------------
-L.drawControl = {
-  draw:{
-    toolbar:{
-      buttons:{
-        polyline: "hala"
-      }
-    },
-    handlers:{
-      polyline: {
-        tooltip:{
-          start: 'Klik om een lijn te tekenen',
-          cont: 'Klik om te tekenen',
-          end: "Klik op het laatste punt om de lijn af te maken"
-        }
-      }
-    }
-  }
-};
-
-
 
 //-------------------
 // Initialize transect line
 //-------------------
 var line = d3.select("#line");
-line.attr("background-image", "http://www.danone.nl/Danone/media/Danone/HeaderBackgrounds/Lucht.jpg?width=1600&height=800&ext=.jpg")
-var widthLine = line.style("width").replace("px", "");
+var widthLine = line.style("width").replace("px", "")-5;
 var width = widthLine/100;
-var heightdif = 150;
+var heightdif = 190;
 
 //-------------------
 // Moving map marker
@@ -175,6 +142,7 @@ var mouseMarker = L.circleMarker([53.079529, 6.614894], {
 
 line
   .append("circle")
+  .attr("class", "movingCircle")
   .attr("r", 5)
   .attr("fill", "none")
   .attr("cy", heightdif)
@@ -197,9 +165,9 @@ line
 line.append("line")
   .attr("x1", 56)
   .attr("y1", heightdif)
-  .attr("x2", widthLine)
+  .attr("x2", widthLine -5)
   .attr("y2", heightdif)
-  .attr("stroke", "black")
+  .attr("stroke", "#2B2118")
   .attr("stroke-width", 1)
   .style("stroke-dasharray", ("3, 3"));
   
@@ -208,16 +176,24 @@ line.append("text")
   .attr("x", 6)
   .attr("y", heightdif+2)
   .attr("class", "NAP")
-  .attr("font-family", "sans-serif")
+  .attr("font-family", "Florlrg")
+  .attr("font-size", "13px")
+
+line.append("text")
+  .text(" ... meters")
+  .attr("x", widthLine-100)
+  .attr("y", "40")
+  .attr("class", "hoogte")
+  .attr("font-family", "Florlrg")
   .attr("font-size", "13px")
   
 //-------------------
 // Initiate line drawing
 //-------------------
-var coordinates = "6.625041066727135%2053.09510641588805,6.633795796951745%2053.083714492247026";
+var coordinates = "6.605443954467773%2053.08026023642996,6.649303436279297%2053.089952072848995";
 updateTransect(coordinates);
 
-var lijn = L.polyline([[53.09510641588805,6.625041066727135], [53.083714492247026,6.633795796951745]],{
+var lijn = L.polyline([[53.08026023642996,6.605443954467773], [53.089952072848995,6.649303436279297]],{
     color: "#EC8F2D"
   });
 lijn.addTo(map);
@@ -225,10 +201,13 @@ lijn.addTo(map);
 //-------------------
 // update line
 //-------------------
+var length
 map.on('draw:created', function(e){
   var type = e.layerType;
   var layer = e.layer; 
   if (type === 'polyline'){
+    length = layer.getBounds()
+    console.log(length)
     coordinates = layer.getLatLngs().map(function(latLng){
       return latLng.lng + '%20' + latLng.lat;
     }).join(',');
@@ -243,7 +222,8 @@ map.on('draw:created', function(e){
 function updateTransect(coordinates){
   d3.json('transect?linestring=' + coordinates, function(json){
     console.log("requesting line from database");
-    
+    console.log(coordinates)
+    console.log(json)
     //-------------------
     // Get field names: filter out duplicate points
     //-------------------
@@ -258,6 +238,7 @@ function updateTransect(coordinates){
       return false;
     }); 
     
+    line.select(".hoogte").text(   + "meters")
     //-------------------
     // groups soil fields
     //-------------------
@@ -272,46 +253,11 @@ function updateTransect(coordinates){
     var waterGroups = groupBy(water, function(item){
       return [item.waterid]});
       
-    //-------------------
-    // Interactivity Line
-    //-------------------
-    function mousemove(){
-      var x0 = d3.mouse(this)[0];
-      bisect = d3.bisector(function(d) { return d.percentage*width; }).left;
-      var i = bisect(json, x0, 1);
-      var y = json[i].heights;
-      
-      // Circle moving over the line //
-      line.selectAll('circle')
-        .attr("cx", function(x){
-           return x0
-            })
-        .attr("cy", function(x){
-            return y*-5+heightdif
-            })
-        .attr("fill", "#EC8F2D");
-      // height text //
-      d3.select('.meters')
-        .attr("x", function(x){
-           return x0
-        })
-        .attr("y", function(x){
-            return y*-5+heightdif -30
-        })  
-        .text( function (x) { 
-              return Math.round(y) + " m"
-        });
-      // Marker on map location //
-      var latLng = json[i].geometry.coordinates.slice(0, 2);
-      latLng.reverse();
-      mouseMarker.setLatLng(latLng);
-    };
-    d3.select("body")
-      .on("mousemove", mousemove);
+    
     //-------------------
     //remove previous landscape if exists
     //-------------------
-    line.selectAll("path, image, .soilName, .water").remove();
+    line.selectAll("path, image, .soilName, .water, .textCircle, .waterName, .waterCircle").remove();
     //-------------------
     // soil area draw
     //-------------------     
@@ -324,17 +270,17 @@ function updateTransect(coordinates){
         if(d[0].naam !== null){
           return areaFunction(d)}
         })
-      .attr("fill", "#EC8F2D")
-      .attr("opacity", "0.8")
+      .attr("fill", "#B3BC31")
+      .attr("opacity", "0.6")
       .attr("stroke", "none")
       .attr("stroke-width", "none")
       .on("mouseover", function(){
         d3.select(this)
-        .attr("fill", "#B3BC31")
+        .attr("fill", "#EC8F2D")
       })
       .on("mouseout", function(){
         d3.select(this)
-        .attr("fill", "#EC8F2D")
+        .attr("fill", "#B3BC31")
       })
       .on("mouseclick", function(){
         d3.select(this).enter().append("text")
@@ -344,7 +290,7 @@ function updateTransect(coordinates){
     //-------------------
     // Water area
     //-------------------
-    var water = line.selectAll(".water")
+    line.selectAll(".water")
       .data(waterGroups)
       .enter()
       .append("path")
@@ -355,8 +301,54 @@ function updateTransect(coordinates){
       .attr("fill", "steelblue")
       .attr("opacity", "0.5")
       .attr("stroke", "steelblue")
-      .attr("stroke-width", "5px");
-
+      .attr("stroke-width", "10px");
+    //-------------------
+    // water name text
+    //-------------------
+    line.selectAll("text")
+      .data(waterGroups)
+      .enter()
+      .append("text")
+      .attr("class", "waterName")
+      .attr("x", function(x){
+        return (x[0].percentage * width)
+      })
+      .attr("y", function(x){
+        return ((x[0].heights*-5)+ heightdif-130)
+      })
+      .text( function (x) { 
+        if (x[0].waternaam !== null) {return x[0].waternaam}
+      })
+      .attr("font-family", "Florlrg")
+      .attr("margin", "5px 5px 5px 5px")
+      .attr("font-size", "12px")
+      .attr("font-style", "italic")
+      .attr("fill", "steelblue")
+      .attr("text-anchor", "bottom")
+      .attr("transform", function(x){
+        return "rotate(90 " + x[0].percentage * width +"," + ((x[0].heights*-5)+ heightdif-130) + ")"
+      });
+    //-------------------
+    // Water Circles
+    //-------------------
+      line.selectAll('.waterCircle')
+        .data(waterGroups)
+        .enter()
+        .append("circle")
+        .attr("class", "waterCircle")
+        .attr("cx", function(d){
+          if(d[0].waternaam !== null){
+            return (d[0].percentage*width)+3}
+          })
+        .attr("cy", function(d){
+                    if(d[0].waternaam !== null){
+                      return ((d[0].heights*-5)+heightdif-20)}
+           })  
+        .attr("r", 4)
+        .attr("fill", "none")
+        .attr("stroke", "steelblue")
+        .attr("stroke-width", "2px")
+           .style("stroke-dasharray", ("2, 1"));
     //-------------------
     //draw transect line
     //-------------------
@@ -367,34 +359,94 @@ function updateTransect(coordinates){
       .append("path")
       .attr("class", "transect")
       .attr("d", lineFunction(json))
-      .attr("stroke", "black")
-      .attr("stroke-width", 2)
+      .attr("stroke", "#2B2118")
+      .attr("stroke-width", 3)
       .attr("fill", "none");
 
     //-------------------
     // Field name text
+    //-------------------
     var text = line.selectAll("text")
       .data(field)
       .enter()
       .append("text")
       .attr("class", "soilName")
       .attr("x", function(x){
-        return x.percentage * width
+        return (x.percentage * width)+10
       })
       .attr("y", function(x){
-        return x.heights*-5+ heightdif + 15
+        return ((x.heights*-5)+ heightdif)+30
       })
       .text( function (x) { 
         if (x.naam !== null) {return x.naam}
       })
-      .attr("font-family", "sans-serif")
-      .attr("font-size", "18px")
-      .attr("fill", "black")
-      .attr("text-anchor", "top left")
+      .attr("font-family", "Florlrg")
+      .attr("margin", "5px 5px 5px 5px")
+      .attr("font-size", "16px")
+      .attr("font-weight", "regular")
+      .attr("fill", "#2B2118")
+      .attr("text-anchor", "top")
       .attr("transform", function(x){
-        return "rotate(40 " + x.percentage * width +"," + (x.heights*-5+ heightdif +30) + ")"
+        return "rotate(90 " + (x.percentage * width+10) +"," + ((x.heights*-5)+ heightdif+30) + ")"
       });
-  
+    //-------------------
+    // Field name Circles
+    //-------------------
+      line.selectAll('.textCircle')
+        .data(field)
+        .enter()
+        .append("circle")
+        .attr("class", "textCircle")
+        .attr("cx", function(d){
+          if(d.naam !== null){
+            return (d.percentage*width)+15}
+          })
+        .attr("cy", function(d){
+                    if(d.naam !== null){
+                      return ((d.heights*-5)+heightdif)+20}
+           })  
+        .attr("r", 4)
+        .attr("fill", "none")
+        .attr("stroke", "#2B2118")
+        .attr("stroke-width", "2px")
+           .style("stroke-dasharray", ("2, 1"));
+      //-------------------
+      // Interactivity Line
+      //-------------------
+      function mousemove(){
+        var x0 = d3.mouse(this)[0];
+        bisect = d3.bisector(function(d) { return d.percentage*width; }).left;
+        var i = bisect(json, x0, 1);
+        var y = json[i].heights;
+    
+        // Circle moving over the line //
+        line.selectAll('.movingCircle')
+          .attr("cx", function(x){
+             return x0
+              })
+          .attr("cy", function(x){
+              return y*-5+heightdif
+              })
+          .attr("fill", "#EC8F2D");
+        // height text //
+          
+        d3.select('.meters')
+          .attr("x", function(x){
+             return x0
+          })
+          .attr("y", function(x){
+              return y*-5+heightdif -30
+          })  
+          .text( function (x) { 
+                return Math.round(y) + " m"
+          });
+        // Marker on map location //
+        var latLng = json[i].geometry.coordinates.slice(0, 2);
+        latLng.reverse();
+        mouseMarker.setLatLng(latLng);
+      };
+      d3.select("body")
+        .on("mousemove", mousemove);
     //-------------------
     // symbols on the line
     //-------------------
@@ -428,8 +480,9 @@ function updateTransect(coordinates){
         return true
       } else return false
     });
-  
+    //-------------------
     // apend category symbol to fields
+    //-------------------
     var cat = line.selectAll("image")
       .data(pict)
       .enter()
@@ -472,9 +525,42 @@ function updateTransect(coordinates){
           case "E13": return "/pict/e13.svg"
           break;
         };
+   
       });
   });
 };
 
   
+d3.select("#legend")
+.on("mouseover", function(){
+  d3.select(this)
+  .transition()
+    .style("height", "500px")
+    .style("width", "500px")
+    .style("background-color", "grey")
+   
+})
+.on("mouseout", function(){
+  d3.select(this)
+  .transition()
+    .style("height", "50px")
+    .style("width", "50px")
+    .style("background-color", "#EC8F2D")
+})
+
+d3.select("#explanation")
+.on("mouseover", function(){
+  d3.select(this)
+    .transition()
+    .style("height", "500px")
+    .style("width", "500px")
+    .style("background-color", "grey")
     
+})
+.on("mouseout", function(){
+  d3.select(this)
+  .transition()
+    .style("height", "50px")
+    .style("width", "50px")
+    .style("background-color", "#EC8F2D")
+})

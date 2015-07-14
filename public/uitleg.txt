@@ -1,0 +1,12 @@
+<div>
+<h2> De uitleg: </h2>
+<p>Met deze knop kan je een lijn beginnen te teken op de kaart</p>
+<img src="pict/drawpolyline.svg"> </img>
+<p>Eindig de lijn door nog eens op het laatste punt te klikken</p>
+<img src="pict/clickendpoint.svg"> </img>
+<p>Heb even geduld... </p>
+<img src="pict/hourglass.svg"> </img>
+<p>Nu wordt jouw hoogte doorsnede van het landschap getekend!</p>
+<p>Ontdek de namen van de velden, er zijn verhalen, dieren en betekenissen te vinden </p>
+<img src="pict/landscape.svg"> </img>
+</div>
