@@ -18,9 +18,9 @@ AHN AS
   WHERE ST_Intersects(ahn.rast, p.geom)),
 
 fields AS
-    (SELECT naam AS naam, code_1_ AS category1, code_2 AS category2, ST_Intersection(p.geom, veldnamen2.geom) AS geoms
-        	FROM veldnamen2, points2d p 
-        	WHERE ST_Intersects(veldnamen2.geom, p.geom)),
+    (SELECT naam AS naam, code_1 AS category1, code_2 AS category2, ST_Intersection(p.geom, veldnamen_final.geom) AS geoms
+        	FROM veldnamen_final, points2d p 
+        	WHERE ST_Intersects(veldnamen_final.geom, p.geom)),
 
 --Get Water inersects
 waters As

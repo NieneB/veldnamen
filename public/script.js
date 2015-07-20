@@ -40,16 +40,16 @@ L.control.layers.minimap(basemaps, overlays, {
 //-------------------
 // Velden met naam tekenen
 //-------------------
-// d3.json('veldnamen', function(json){
-//   console.log("requesting fields from database");
-//   L.geoJson(json.features[0],
-//     {style:{
-//       "fillColor": "#B3BC31",
-//       "stroke": false,
-//       "fillOpacity": "0.6"}
-//     }
-//   ).addTo(map);
-// });
+d3.json('veldnamen', function(json){
+  console.log("requesting fields from database");
+  L.geoJson(json.features[0],
+    {style:{
+      "fillColor": "#B3BC31",
+      "stroke": false,
+      "fillOpacity": "0.6"}
+    }
+  ).addTo(map);
+});
 
 //-------------------
 // Functions 
@@ -128,7 +128,7 @@ map.addControl(drawControl);
 var line = d3.select("#line");
 var widthLine = line.style("width").replace("px", "")-5;
 var width = widthLine/100;
-var heightdif = 190;
+var heightdif = 100;
 
 //-------------------
 // Moving map marker
@@ -380,14 +380,14 @@ function updateTransect(coordinates){
       .text( function (x) { 
         if (x.naam !== null) {return x.naam}
       })
-      .attr("font-family", "Florlrg")
+      .attr("font-family", "kingthings")
       .attr("margin", "5px 5px 5px 5px")
-      .attr("font-size", "16px")
-      .attr("font-weight", "regular")
+      .attr("font-size", "20px")
+      .attr("font-weight", "bold")
       .attr("fill", "#2B2118")
       .attr("text-anchor", "top")
       .attr("transform", function(x){
-        return "rotate(90 " + (x.percentage * width+10) +"," + ((x.heights*-5)+ heightdif+30) + ")"
+        return "rotate(70 " + (x.percentage * width+10) +"," + ((x.heights*-5)+ heightdif+30) + ")"
       });
     //-------------------
     // Field name Circles
