@@ -68,5 +68,5 @@ function query(sql, params, callback) {
 }
 
 var server = app.listen(3000, function () {
-  console.log('Nienes Veldnamen! 🐐', host, port);
+  console.log('Nienes Veldnamen! 🐐');
 });
