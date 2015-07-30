@@ -310,9 +310,16 @@ function updateTransect(coordinates){
               W : "Windrichting",
               O : "Overig"
             };
-        
-        d3.text("text/" + d[0].category1.toLowerCase() + ".txt", function(text){
-          d3.text("text/" + d[0].category2.toLowerCase() +".txt", function(text2){
+            var nr1;
+            var nr2;
+            if(d[0].category1 != null){
+              nr1 = d[0].category1.toLowerCase()
+            };
+            if(d[0].category2 != null){
+              nr2 = d[0].category2.toLowerCase()
+            };
+        d3.text("text/" + nr1 + ".txt", function(text){
+          d3.text("text/" + nr2 +".txt", function(text2){
             if(d[0].category1 == d[0].category2 || d[0].category2 == null){
               t.html("<h2>" + d[0].naam + "<br> <i> Categorie: "+ 
               categories[group1] + " </i> </h2> " +  text);
@@ -548,7 +555,10 @@ function updateTransect(coordinates){
         return (x[0].heights*-7)+heightdif-50
       })
       .attr("xlink:href",  function(x){ 
-        var picture = x[0].category1.toLowerCase();
+        var picture;
+        if(x[0].category1 != null){
+           picture = x[0].category1.toLowerCase()
+        }
         switch(x[0].category1){
           case "B3": return "pict/" + picture + ".svg"
           case "D1": return "pict/" + picture + ".svg"
