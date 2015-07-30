@@ -18,6 +18,7 @@ app.get('/', function (req, res) {
   res.send({
     message: 'Veldnamen API',
     urls: [
+      'http://localhost:3000/welcome.html',
       'http://localhost:3000/map.html',
       'http://localhost:3000/veldnamen',
       'http://localhost:3000/transect?linestring=6.608791351318359 53.08185850865092,6.626729965209961 53.083147394638345'

@@ -1,3 +1,8 @@
+* {
+    margin: 0;
+    padding: 0;
+    
+}
 *{
   text-decoration: none;
 }
@@ -9,7 +14,10 @@
     font-family: 'Florlrg'; 
     src: url('font/FLORLRG_.ttf'); 
 }
-
+@font-face {
+    font-family: 'kingthings'; 
+    src: url('font/Kingthings_Exeter.ttf'); 
+}
 #map {
   position: absolute;
   width: 100%;
@@ -29,44 +37,54 @@
   border-radius: 25px;
 }
 #color{
-  padding: 10px 10px 10px 10px ;
   position: fixed;
-  width: 80%;
-  height: 90%;
-  top: 50%; 
-  left: 50%;
-  transform: translate(-50%, -50%);
-  z-index: 1;
-  background-color: #B3BC31;;
-  opacity: 0.7;
-  mix-blend-mode: multiply ;
-  border-radius: 25px;
+  width: 100%;
+  height: 100%;
+  bottom: 0% ; 
+  
+  z-index: -1;
+  background-color: #B3BC31;
 }
 .explanation{
   position: static;
   display: inline-block;
-  float: center;
-  overflow: auto;
-  width: 45%;
-  margin: 20px 10px 10px 10px ;
-  height: 65%;
-  vertical-align: middle;
+  width: 42%;
+  margin: 20px 20px 20px 20px ;
+  padding: 2%;
+  height: 100%;
+  margin-top: 25%;
+  vertical-align: top;
   text-align: center;
   border-radius: 10px;
   background-color: #EC8F2D;
-  box-sizing: border-box;
+
 }
 
+#info{
+  position: absolute;
+  float:right;
+  z-index:-4;
+  overflow: auto;
+  height: 50%;
+  width: 25%;
+  visibility: hidden;
+  background-color: white;
+  border-radius: 10px;
+  text-align: justify;
+  top:30%;
+  right:5%;
+  transform: translate(-0%, -50%);
+  padding: 10px 10px 10px 10px ;
+  font-family: kingthings ;
+}
 #header{
   width:100%;
-  height: 30%;
-  border-top-left-radius:25px;
-  border-top-right-radius:25px;
-  position: static;
+  height:40%;
+  position: fixed;
   display: block; 
   top: 0px;
   left: 0px;
-
+  z-index:0;
   background-size: 100%;
 /*  http://in.drenthe.nl/dmedia/media/user-images/4bd0f/2fdce/3ef07/5bcaf/d2166/drenthe-header-lente-2015-v3.jpg*/
   background-image: url('http://hetreestdal.nl/wp/wp-content/uploads/2012/11/Wildenberg-2.jpg') ;
@@ -85,7 +103,9 @@
   color: white;
   border-radius: 5px;
   cursor: pointer;
-  margin: auto;
+  margin: auto ;
+  margin-top:20px;
+  margin-bottom: 10px;
   text-align: center;
 
 }
@@ -138,9 +158,11 @@ h2{
   text-align: center;
   font-size: 150%;
   font-weight: bold;
+  font-family: kingthings
   
 }
 p{
+  font-family: kingthings;
   color: #2B2118;
   text-align: center;
   font-size: 110%;
@@ -148,7 +170,7 @@ p{
 
 #bron{
   font-style: italic;
-  position:absolute;
+  position:static;
   bottom: 0px;
   width: 100%;
   margin: auto;

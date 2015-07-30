@@ -58,7 +58,7 @@ var lineFunction = d3.svg.line()
   .x( function(d){
     return (d.percentage * width)})
   .y( function(d){
-    return (d.heights*-5)+ heightdif})
+    return (d.heights*-7)+ heightdif})
   .interpolate("basis-open");
 
 var areaFunction = d3.svg.area()
@@ -125,10 +125,15 @@ map.addControl(drawControl);
 //-------------------
 // Initialize transect line
 //-------------------
-var line = d3.select("#line");
+var line = d3.select("#line")
+var transect = line.append("g").attr("class", "transect"); // Line and field areas
+var names = line.append("g").attr("class", "names"); // Fieldnames + water
+var panel = line.append("g"); // NAP + meters
+var mouse = line.append("g"); // moving marker + heights
 var widthLine = line.style("width").replace("px", "")-5;
+
 var width = widthLine/100;
-var heightdif = 100;
+var heightdif = 150;
 
 //-------------------
 // Moving map marker
@@ -140,7 +145,7 @@ var mouseMarker = L.circleMarker([53.079529, 6.614894], {
   fillOpacity: 1
 }).addTo(map);
 
-line
+mouse
   .append("circle")
   .attr("class", "movingCircle")
   .attr("r", 5)
@@ -148,7 +153,7 @@ line
   .attr("cy", heightdif)
   .attr("cx", 0);
   
-line
+mouse
   .append("text")
   .attr("x", 0)
   .attr("y", heightdif-10)
@@ -162,7 +167,7 @@ line
 //-------------------
 // NAP line
 //-------------------
-line.append("line")
+panel.append("line")
   .attr("x1", 56)
   .attr("y1", heightdif)
   .attr("x2", widthLine -5)
@@ -171,7 +176,7 @@ line.append("line")
   .attr("stroke-width", 1)
   .style("stroke-dasharray", ("3, 3"));
   
-line.append("text")
+panel.append("text")
   .text("NAP lijn")
   .attr("x", 6)
   .attr("y", heightdif+2)
@@ -179,7 +184,7 @@ line.append("text")
   .attr("font-family", "Florlrg")
   .attr("font-size", "13px")
 
-line.append("text")
+panel.append("text")
   .text(" ... meters")
   .attr("x", widthLine-100)
   .attr("y", "40")
@@ -207,7 +212,6 @@ map.on('draw:created', function(e){
   var layer = e.layer; 
   if (type === 'polyline'){
     length = layer.getBounds()
-    console.log(length)
     coordinates = layer.getLatLngs().map(function(latLng){
       return latLng.lng + '%20' + latLng.lat;
     }).join(',');
@@ -223,7 +227,7 @@ function updateTransect(coordinates){
   d3.json('transect?linestring=' + coordinates, function(json){
     console.log("requesting line from database");
     console.log(coordinates)
-    console.log(json)
+
     //-------------------
     // Get field names: filter out duplicate points
     //-------------------
@@ -238,7 +242,6 @@ function updateTransect(coordinates){
       return false;
     }); 
     
-    line.select(".hoogte").text(   + "meters")
     //-------------------
     // groups soil fields
     //-------------------
@@ -257,11 +260,18 @@ function updateTransect(coordinates){
     //-------------------
     //remove previous landscape if exists
     //-------------------
-    line.selectAll("path, image, .soilName, .water, .textCircle, .waterName, .waterCircle").remove();
+    transect.selectAll("path, image, text, circle").remove();
+    names.selectAll("path, text, image, circle").remove();
+  //-------------------
+  //Information panels
+  //-------------------
+    
+   var tooltip = d3.select("#info")
+    console.log(soil)
     //-------------------
     // soil area draw
     //-------------------     
-    var area = line.selectAll(".bodem")
+    transect.selectAll(".bodem")
       .data(soil)
       .enter()
       .append("path")
@@ -274,23 +284,65 @@ function updateTransect(coordinates){
       .attr("opacity", "0.6")
       .attr("stroke", "none")
       .attr("stroke-width", "none")
-      .on("mouseover", function(){
+      
+      .on("mouseover", function(d){
         d3.select(this)
-        .attr("fill", "#EC8F2D")
+          .attr("fill", "#EC8F2D")
+        
+        tooltip.selectAll("p").remove();
+        var t =  tooltip.style("visibility", "visible")
+          .style("z-index", 10)
+          .append("p");
+        console.log(d[0].category1)
+        var group1 = d[0].category1.substring(0,1);
+        var group2
+        if (d[0].category2){
+          group2 = d[0].category2.substring(0,1);  
+        } else {group2 = 0}
+        
+        var categories = {
+              A : "Relief",
+              B : "Bodem",
+              C : "Waternamen",
+              D : "Beekdal en Moeras",
+              E : "Bossen",
+              F : "Veldgrond en Stuifzand",
+              G : "Wilde Dieren",
+              W : "Windrichting",
+              O : "Overig"
+            };
+        d3.text("/text/" + d[0].category1 + ".txt", function(text){
+          d3.text("/text/" + d[0].category2 +".txt", function(text2){
+            if(d[0].category1 == d[0].category2 || d[0].category2 == null){
+              t.html("<h2>" + d[0].naam + "<br> <i> Categorie: "+ 
+              categories[group1] + " </i> </h2> " +  text);
+              console.log("test gelukt")
+            }
+            else {
+              t.html("<h2>" + d[0].naam + "<br> <i> Categorie:"+ 
+              categories[group1] + "</i></h2> " + text +
+              " <br> <h2> <i> Categorie:"+ categories[group2]+ "</i> </h2>" + text2 );
+            }
+          });
+        }); 
       })
       .on("mouseout", function(){
         d3.select(this)
-        .attr("fill", "#B3BC31")
-      })
-      .on("mouseclick", function(){
-        d3.select(this).enter().append("text")
-        .text("hallo")
-        
+          .attr("fill", "#B3BC31")
       });
+      
+      tooltip
+        .on("click", function(){
+          d3.select(this)
+            .style("visibility", "hidden")
+      });   
+      
+      
+  
     //-------------------
     // Water area
     //-------------------
-    line.selectAll(".water")
+    transect.selectAll(".water")
       .data(waterGroups)
       .enter()
       .append("path")
@@ -305,7 +357,7 @@ function updateTransect(coordinates){
     //-------------------
     // water name text
     //-------------------
-    line.selectAll("text")
+    names.selectAll("text")
       .data(waterGroups)
       .enter()
       .append("text")
@@ -314,24 +366,24 @@ function updateTransect(coordinates){
         return (x[0].percentage * width)
       })
       .attr("y", function(x){
-        return ((x[0].heights*-5)+ heightdif-130)
+        return ((x[0].heights*-7)+ heightdif-130)
       })
-      .text( function (x) { 
+      .text( function (x) {
         if (x[0].waternaam !== null) {return x[0].waternaam}
       })
-      .attr("font-family", "Florlrg")
+      .attr("font-family", "kingthings")
       .attr("margin", "5px 5px 5px 5px")
       .attr("font-size", "12px")
       .attr("font-style", "italic")
       .attr("fill", "steelblue")
       .attr("text-anchor", "bottom")
       .attr("transform", function(x){
-        return "rotate(90 " + x[0].percentage * width +"," + ((x[0].heights*-5)+ heightdif-130) + ")"
+        return "rotate(90 " + x[0].percentage * width +"," + ((x[0].heights*-7)+ heightdif-130) + ")"
       });
     //-------------------
     // Water Circles
     //-------------------
-      line.selectAll('.waterCircle')
+      names.selectAll('.waterCircle')
         .data(waterGroups)
         .enter()
         .append("circle")
@@ -342,7 +394,7 @@ function updateTransect(coordinates){
           })
         .attr("cy", function(d){
                     if(d[0].waternaam !== null){
-                      return ((d[0].heights*-5)+heightdif-20)}
+                      return ((d[0].heights*-7)+heightdif-20)}
            })  
         .attr("r", 4)
         .attr("fill", "none")
@@ -353,7 +405,7 @@ function updateTransect(coordinates){
     //draw transect line
     //-------------------
     var linestring = [json[0]];
-    line.selectAll(".transect")
+    transect.selectAll(".transect")
       .data(linestring)
       .enter()
       .append("path")
@@ -366,7 +418,7 @@ function updateTransect(coordinates){
     //-------------------
     // Field name text
     //-------------------
-    var text = line.selectAll("text")
+    transect.selectAll("text")
       .data(field)
       .enter()
       .append("text")
@@ -375,24 +427,24 @@ function updateTransect(coordinates){
         return (x.percentage * width)+10
       })
       .attr("y", function(x){
-        return ((x.heights*-5)+ heightdif)+30
+        return ((x.heights*-7)+ heightdif)+30
       })
-      .text( function (x) { 
-        if (x.naam !== null) {return x.naam}
+      .text( function (x) {
+        return x.naam
       })
       .attr("font-family", "kingthings")
-      .attr("margin", "5px 5px 5px 5px")
+      .attr("padding", "10px")
       .attr("font-size", "20px")
       .attr("font-weight", "bold")
       .attr("fill", "#2B2118")
       .attr("text-anchor", "top")
       .attr("transform", function(x){
-        return "rotate(70 " + (x.percentage * width+10) +"," + ((x.heights*-5)+ heightdif+30) + ")"
+        return "rotate(70 " + (x.percentage * width+10) +"," + ((x.heights*-7)+ heightdif+30) + ")"
       });
     //-------------------
     // Field name Circles
     //-------------------
-      line.selectAll('.textCircle')
+      names.selectAll('.textCircle')
         .data(field)
         .enter()
         .append("circle")
@@ -403,7 +455,7 @@ function updateTransect(coordinates){
           })
         .attr("cy", function(d){
                     if(d.naam !== null){
-                      return ((d.heights*-5)+heightdif)+20}
+                      return ((d.heights*-7)+heightdif)+20}
            })  
         .attr("r", 4)
         .attr("fill", "none")
@@ -420,12 +472,12 @@ function updateTransect(coordinates){
         var y = json[i].heights;
     
         // Circle moving over the line //
-        line.selectAll('.movingCircle')
+        mouse.selectAll('.movingCircle')
           .attr("cx", function(x){
              return x0
               })
           .attr("cy", function(x){
-              return y*-5+heightdif
+              return y*-7+heightdif
               })
           .attr("fill", "#EC8F2D");
         // height text //
@@ -435,7 +487,7 @@ function updateTransect(coordinates){
              return x0
           })
           .attr("y", function(x){
-              return y*-5+heightdif -30
+              return y*-7+heightdif -30
           })  
           .text( function (x) { 
                 return Math.round(y) + " m"
@@ -483,7 +535,7 @@ function updateTransect(coordinates){
     //-------------------
     // apend category symbol to fields
     //-------------------
-    var cat = line.selectAll("image")
+   transect.selectAll("image")
       .data(pict)
       .enter()
       .append("svg:image")
@@ -494,43 +546,28 @@ function updateTransect(coordinates){
         return x[0].percentage * width-25
       })
       .attr("y", function(x){
-        return (x[0].heights*-5)+heightdif-50
+        return (x[0].heights*-7)+heightdif-50
       })
       .attr("xlink:href",  function(x){ 
+        var picture = x[0].category1
         switch(x[0].category1){
-          case "wilde_dieren": return "/pict/animal.svg"
-          break;
-          case "D2": return "/pict/swomp.svg"
-          break;
-          case "D9": return "/pict/swomp.svg"
-          break;
-          case "D1": return "/pict/swomp.svg"
-          break;
-          case "E1": return "/pict/e7.svg"
-          break;
-          case "E4": return "/pict/e7.svg"
-          break;
-          case "E16": return "/pict/e6.svg"
-          break;
-          case "G1": return "/pict/g1.svg"
-          break;
-          case "G6": return "/pict/g6.svg"
-          break;
-          case "E6": return "/pict/e6.svg"
-          break;
-          case "E14": return "/pict/e14.svg"
-          break;
-          case "E7": return "/pict/e7.svg"
-          break;
-          case "E13": return "/pict/e13.svg"
-          break;
+          case "B3": return "/pict/" + picture + ".svg"
+          case "D1": return "/pict/" + picture + ".svg"
+          case "D2": return "/pict/" + picture + ".svg"
+          case "E1": return "/pict/" + picture + ".svg"
+          case "E6": return "/pict/" + picture + ".svg"
+          case "E7": return "/pict/" + picture + ".svg"
+          case "E13": return "/pict/" + picture + ".svg"
+          case "E14": return "/pict/" + picture + ".svg"
+          case "G1": return "/pict/" + picture + ".svg"
+          case "G6": return "/pict/" + picture + ".svg"
         };
    
       });
   });
 };
 
-  
+///Extra info panels..   
 d3.select("#legend")
 .on("mouseover", function(){
   d3.select(this)
