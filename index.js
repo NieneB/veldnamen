@@ -7,7 +7,13 @@ var pg = require('pg');
 
 app.use(express.static('public'));
 
-var conString = util.format("postgres://%s:%s@%s/%s", config.db.username, config.db.password, config.db.hostname, config.db.database);
+var pgConfig = {
+  user: config.db.username,
+  password: config.db.password,
+  database: config.db.database,
+  port: 5432,
+  host: config.db.hostname
+};
 
 var queries = {
   veldnamen: fs.readFileSync('./queries/veldnamen.sql', {encoding: 'utf8'}),
@@ -61,7 +67,7 @@ function query(sql, params, callback) {
 
   // Voor meer informatie over node-postgres, zie:
   // https://github.com/brianc/node-postgres
-  pg.connect(conString, function(err, client, done) {
+  pg.connect(pgConfig, function(err, client, done) {
     if(err) {
       callback(err);
     } else {
