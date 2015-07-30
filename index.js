@@ -20,18 +20,6 @@ var queries = {
   transect: fs.readFileSync('./queries/transect.sql', {encoding: 'utf8'})
 }
 
-app.get('/', function (req, res) {
-  res.send({
-    message: 'Veldnamen API',
-    urls: [
-      'http://localhost:3000/welcome.html',
-      'http://localhost:3000/map.html',
-      'http://localhost:3000/veldnamen',
-      'http://localhost:3000/transect?linestring=6.608791351318359 53.08185850865092,6.626729965209961 53.083147394638345'
-    ]
-  });
-});
-
 app.get('/veldnamen', function (req, res) {
   query(queries.veldnamen, null, function(err, result) {
     if (err) {
@@ -80,8 +68,5 @@ function query(sql, params, callback) {
 }
 
 var server = app.listen(3000, function () {
-  var host = server.address().address;
-  var port = server.address().port;
-
-  console.log('Nienes API is bereikbaar op http://%s:%s', host, port);
+  console.log('Nienes Veldnamen! 🐐', host, port);
 });
