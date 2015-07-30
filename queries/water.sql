@@ -1,1 +1,0 @@
-SELECT naamnl FROM Water; 
