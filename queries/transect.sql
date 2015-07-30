@@ -18,9 +18,9 @@ AHN AS
   WHERE ST_Intersects(ahn.rast, p.geom)),
 
 fields AS
-    (SELECT naam AS naam, code_1 AS category1, code_2 AS category2, ST_Intersection(p.geom, veldnamen_final.geom) AS geoms
-        	FROM veldnamen_final, points2d p 
-        	WHERE ST_Intersects(veldnamen_final.geom, p.geom)),
+    (SELECT naam AS naam, code_1 AS category1, code_2 AS category2, ST_Intersection(p.geom, veldnamen.geom) AS geoms
+        	FROM veldnamen, points2d p
+        	WHERE ST_Intersects(veldnamen.geom, p.geom)),
 
 --Get Water inersects
 waters As
@@ -35,7 +35,7 @@ points1 AS
 (SELECT * FROM points LEFT OUTER JOIN waters ON (points.geom = waters.geomz))
 
 -- Make points:
-SELECT ST_AsGeoJSON(ST_MakePoint(ST_X(ST_Transform(ST_SetSRID(geom, 28992),4326)), ST_Y(ST_Transform(ST_SetSRID(geom, 28992),4326)), heights)) 
+SELECT ST_AsGeoJSON(ST_MakePoint(ST_X(ST_Transform(ST_SetSRID(geom, 28992),4326)), ST_Y(ST_Transform(ST_SetSRID(geom, 28992),4326)), heights))
 AS geometry, naam, heights, percentage , category1, category2, waternaam, typewater, waterID
 FROM points1
 
