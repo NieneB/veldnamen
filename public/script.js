@@ -225,8 +225,8 @@ map.on('draw:created', function(e){
 //-------------------
 function updateTransect(coordinates){
   d3.json('transect?linestring=' + coordinates, function(json){
-    console.log("requesting line from database");
-    console.log(coordinates)
+  
+    
 
     //-------------------
     // Get field names: filter out duplicate points
@@ -267,7 +267,6 @@ function updateTransect(coordinates){
   //-------------------
     
    var tooltip = d3.select("#info")
-    console.log(soil)
     //-------------------
     // soil area draw
     //-------------------     
@@ -293,7 +292,7 @@ function updateTransect(coordinates){
         var t =  tooltip.style("visibility", "visible")
           .style("z-index", 10)
           .append("p");
-        console.log(d[0].category1)
+
         var group1 = d[0].category1.substring(0,1);
         var group2
         if (d[0].category2){
@@ -316,7 +315,6 @@ function updateTransect(coordinates){
             if(d[0].category1 == d[0].category2 || d[0].category2 == null){
               t.html("<h2>" + d[0].naam + "<br> <i> Categorie: "+ 
               categories[group1] + " </i> </h2> " +  text);
-              console.log("test gelukt")
             }
             else {
               t.html("<h2>" + d[0].naam + "<br> <i> Categorie:"+ 
@@ -551,16 +549,16 @@ function updateTransect(coordinates){
       .attr("xlink:href",  function(x){ 
         var picture = x[0].category1
         switch(x[0].category1){
-          case "B3": return "/pict/" + picture + ".svg"
-          case "D1": return "/pict/" + picture + ".svg"
-          case "D2": return "/pict/" + picture + ".svg"
-          case "E1": return "/pict/" + picture + ".svg"
-          case "E6": return "/pict/" + picture + ".svg"
-          case "E7": return "/pict/" + picture + ".svg"
-          case "E13": return "/pict/" + picture + ".svg"
-          case "E14": return "/pict/" + picture + ".svg"
-          case "G1": return "/pict/" + picture + ".svg"
-          case "G6": return "/pict/" + picture + ".svg"
+          case "B3": return "pict/" + picture + ".svg"
+          case "D1": return "pict/" + picture + ".svg"
+          case "D2": return "pict/" + picture + ".svg"
+          case "E1": return "pict/" + picture + ".svg"
+          case "E6": return "pict/" + picture + ".svg"
+          case "E7": return "pict/" + picture + ".svg"
+          case "E13": return "pict/" + picture + ".svg"
+          case "E14": return "pict/" + picture + ".svg"
+          case "G1": return "pict/" + picture + ".svg"
+          case "G6": return "pict/" + picture + ".svg"
         };
    
       });
