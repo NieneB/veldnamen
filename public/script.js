@@ -310,8 +310,8 @@ function updateTransect(coordinates){
               W : "Windrichting",
               O : "Overig"
             };
-        d3.text("/text/" + d[0].category1 + ".txt", function(text){
-          d3.text("/text/" + d[0].category2 +".txt", function(text2){
+        d3.text("text/" + d[0].category1 + ".txt", function(text){
+          d3.text("text/" + d[0].category2 +".txt", function(text2){
             if(d[0].category1 == d[0].category2 || d[0].category2 == null){
               t.html("<h2>" + d[0].naam + "<br> <i> Categorie: "+ 
               categories[group1] + " </i> </h2> " +  text);
